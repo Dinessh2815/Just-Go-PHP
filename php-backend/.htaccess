@@ -1,0 +1,35 @@
+# Enable rewrite engine
+RewriteEngine On
+
+# Handle Cross-Origin requests
+Header set Access-Control-Allow-Origin "*"
+Header set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+Header set Access-Control-Allow-Headers "Content-Type, Authorization"
+
+# API Routing Rules
+
+# GET /api/v1/listings
+RewriteRule ^api/v1/listings/?$ api/v1/listings/index.php [L,QSA]
+
+# GET /api/v1/listings/:id 
+RewriteRule ^api/v1/listings/([0-9]+)/?$ api/v1/listings/get.php?id=$1 [L,QSA]
+
+# POST /api/v1/listings
+RewriteCond %{REQUEST_METHOD} POST
+RewriteRule ^api/v1/listings/?$ api/v1/listings/create.php [L,QSA]
+
+# PUT/PATCH /api/v1/listings/:id
+RewriteCond %{REQUEST_METHOD} PUT [OR]
+RewriteCond %{REQUEST_METHOD} PATCH
+RewriteRule ^api/v1/listings/([0-9]+)/?$ api/v1/listings/update.php?id=$1 [L,QSA]
+
+# DELETE /api/v1/listings/:id
+RewriteCond %{REQUEST_METHOD} DELETE
+RewriteRule ^api/v1/listings/([0-9]+)/?$ api/v1/listings/delete.php?id=$1 [L,QSA]
+
+# For requests with custom headers like OPTIONS
+RewriteCond %{REQUEST_METHOD} OPTIONS
+RewriteRule ^(.*)$ $1 [R=200,L]
+
+# Handle 404 errors
+ErrorDocument 404 /api/v1/404.php
